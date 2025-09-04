@@ -1,3 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+
+# Środowiska wirtualne
+venv/
+env/
+.venv/
+
+# Flask data/logs
+backend/data.csv
+
 # Node / React
 react-frontend/node_modules/
 react-frontend/build/
