@@ -1,0 +1,7 @@
+# Node / React
+react-frontend/node_modules/
+react-frontend/build/
+frontend/.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
