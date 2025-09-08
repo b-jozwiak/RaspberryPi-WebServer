@@ -13,13 +13,15 @@ def submit():
     global buffer
     data = request.json
     now = datetime.now()
-
-    buffer.append({
+    
+    dataToAppend = {
         "time": now,
         "temperature": int(data["temperature"]),
         "humidity": int(data["humidity"])
-    })
+    }
 
+    print(dataToAppend)
+    buffer.append(dataToAppend)
     if now.second in (0, 30):
         flush_buffer(now)
 
