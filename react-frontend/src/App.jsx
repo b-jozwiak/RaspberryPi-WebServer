@@ -11,7 +11,7 @@ function App() {
   ]);
 
   const [options] = useState({
-    chart: { type: "line", height: 350 },
+    chart: { type: "area", height: 400 },
     xaxis: { type: "datetime" },
     yaxis: [
       { title: { text: "Temperature (°C)" } },
@@ -33,8 +33,8 @@ function App() {
   useEffect(() => {
     socket.on("update", d => {
       setSeries(prev => [
-        { name: "Temperature", data: [...prev[0].data, [new Date(d.time).getTime(), d.temperature]] },
-        { name: "Humidity", data: [...prev[1].data, [new Date(d.time).getTime(), d.humidity]] }
+        { name: "Temperature", data: [...prev[0].data, [d.time, d.temperature]] },
+        { name: "Humidity", data: [...prev[1].data, [d.time, d.humidity]] }
       ]);
     });
     return () => socket.off("update");
