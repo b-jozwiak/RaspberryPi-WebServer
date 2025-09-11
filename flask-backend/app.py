@@ -35,12 +35,14 @@ def flush_buffer():
     floored_second = 0 if now.second < 30 else 30
     timestamp = now.replace(second=floored_second, microsecond=0)
     timestamp_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    timestamp_ms = int(timestamp.timestamp() * 1000)
 
     with open("data.csv", "a") as f:
         f.write(f"{timestamp_str},{avg_temp:.2f},{avg_hum:.2f}\n")
 
     socketio.emit("update", {
-        "time": timestamp_str,
+        "time": timestamp_ms,  
+        "label": timestamp_str,
         "temperature": avg_temp,
         "humidity": avg_hum
     })
