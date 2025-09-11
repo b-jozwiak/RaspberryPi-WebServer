@@ -26,6 +26,7 @@ def submit():
 
 
 def flush_buffer():
+    print("this should print!");
     global buffer
     if not buffer:
         return
