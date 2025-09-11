@@ -37,6 +37,7 @@ def flush_buffer():
     timestamp_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
     timestamp_ms = int(timestamp.timestamp() * 1000)
 
+    print("FLUSHINGGGG")
     with open("data.csv", "a") as f:
         f.write(f"{timestamp_str},{avg_temp:.2f},{avg_hum:.2f}\n")
 
@@ -75,6 +76,6 @@ def not_found(_):
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000)
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=flush_buffer, trigger="cron", second="0,30")
+    scheduler.add_job(flush_buffer, "cron", second="0,30")
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
