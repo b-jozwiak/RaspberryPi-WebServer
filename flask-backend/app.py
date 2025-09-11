@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_socketio import SocketIO
 from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 import math
 
 app = Flask(__name__, static_folder="../react-frontend/dist", static_url_path="/")
@@ -12,30 +14,24 @@ buffer = []
 def submit():
     global buffer
     data = request.json
-    now = datetime.now()
-    
     dataToAppend = {
-        "time": now,
+        "time": datetime.now(),
         "temperature": int(data["temperature"]),
         "humidity": int(data["humidity"])
     }
 
     print(dataToAppend)
     buffer.append(dataToAppend)
-    if now.second in (0, 30):
-        flush_buffer(now)
-
     return jsonify({"status": "ok"})
 
 
-def flush_buffer(now):
+def flush_buffer():
     global buffer
     if not buffer:
         return
-
-    avg_temp = sum(d["temperature"] for d in buffer) / len(buffer)
-    avg_hum = sum(d["humidity"] for d in buffer) / len(buffer)
-
+    avg_temp = round(sum(d["temperature"] for d in buffer) / len(buffer), 1)
+    avg_hum  = round(sum(d["humidity"] for d in buffer) / len(buffer), 1)
+    now = datetime.now()
     floored_second = 0 if now.second < 30 else 30
     timestamp = now.replace(second=floored_second, microsecond=0)
     timestamp_str = timestamp.strftime("%Y-%m-%d %H:%M:%S")
@@ -48,7 +44,6 @@ def flush_buffer(now):
         "temperature": avg_temp,
         "humidity": avg_hum
     })
-
     buffer.clear()
 
 
@@ -77,3 +72,7 @@ def not_found(_):
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000)
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=flush_buffer, trigger="cron", second="0,30")
+    scheduler.start()
+    atexit.register(lambda: scheduler.shutdown())
