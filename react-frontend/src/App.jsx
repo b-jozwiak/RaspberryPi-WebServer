@@ -40,7 +40,17 @@ function App() {
     return () => socket.off("update");
   }, []);
 
-  return <Chart options={options} series={series} type="line" height={350} />;
+  return (
+          <div style={{ width: "100%", maxWidth: "900px", margin: "0 auto" }}>
+            <Chart
+              options={options}
+              series={series}
+              type="line"
+              height={400}
+              width="100%"
+            />
+          </div>
+        );
 }
 
 export default App;
