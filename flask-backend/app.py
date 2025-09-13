@@ -80,6 +80,25 @@ def serve_index():
 def not_found(_):
     return send_from_directory(app.static_folder, "index.html")
 
+@socketio.on("connect")
+def handle_connect():
+    print("Client connected")
+    # send last datapoint on connect
+    try:
+        with open("data.csv", "r") as f:
+            last = f.readlines()[-1]
+            t, temp, hum = last.strip().split(",")
+            dt = datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
+            timestamp_ms = int(dt.timestamp() * 1000)
+            socketio.emit("update", {
+                "time": timestamp_ms,
+                "temperature": float(temp),
+                "humidity": float(hum)
+            })
+    except Exception:
+        pass
+
+
 
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
