@@ -21,7 +21,7 @@ function App() {
       }
     },
     tooltip: {
-      x: { format: "dd MMM HH:mm" },
+      x: { format: "dd MMM HH:mm:ss" },
       y: {
         formatter: function (val, opts) {
           if (opts.seriesIndex === 0) {
