@@ -12,7 +12,26 @@ function App() {
 
   const [options] = useState({
     chart: { type: "area", height: 400 },
-    xaxis: { type: "datetime" },
+    stroke: { curve: "smooth" }, // spline style
+    xaxis: {
+      type: "datetime",
+      labels: {
+        datetimeUTC: false, // show local time
+        format: "dd HH:mm" // day + hour:minute
+      }
+    },
+    tooltip: {
+      x: { format: "dd MMM HH:mm" },
+      y: {
+        formatter: function (val, opts) {
+          if (opts.seriesIndex === 0) {
+            return val + " °C";
+          } else {
+            return val + " %";
+          }
+        }
+      }
+    },
     yaxis: [
       { title: { text: "Temperature (°C)" } },
       { opposite: true, title: { text: "Humidity (%)" } }
