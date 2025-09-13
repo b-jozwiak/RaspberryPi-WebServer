@@ -41,7 +41,7 @@ function App() {
   }, []);
 
   return (
-          <div style={{ width: "100%", maxWidth: "900px", margin: "0 auto" }}>
+          <div style={{ width: "100vw", margin: "0 auto" }}>
             <Chart
               options={options}
               series={series}

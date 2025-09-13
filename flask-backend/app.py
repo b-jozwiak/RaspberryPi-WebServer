@@ -51,6 +51,7 @@ def flush_buffer():
     buffer.clear()
 
 
+
 @app.route("/history")
 def history():
     data = []
@@ -58,7 +59,13 @@ def history():
         with open("data.csv", "r") as f:
             for line in f:
                 t, temp, hum = line.strip().split(",")
-                data.append({"time": t, "temperature": float(temp), "humidity": float(hum)})
+                dt = datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
+                timestamp_ms = int(dt.timestamp() * 1000)
+                data.append({
+                    "time": timestamp_ms,
+                    "temperature": float(temp),
+                    "humidity": float(hum)
+                })
     except FileNotFoundError:
         pass
     return jsonify(data)
@@ -75,8 +82,9 @@ def not_found(_):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)
     scheduler = BackgroundScheduler()
     scheduler.add_job(flush_buffer, "cron", second="0,30")
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
+
+    socketio.run(app, host="0.0.0.0", port=5000)
